@@ -29,13 +29,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/api/pacientes/**")
-                        .hasAnyRole("ADMIN", "MEDICO", "ENFERMEIRO", "RECEPCIONISTA")
-                        .requestMatchers("/api/profissionais/**").hasAnyRole("ADMIN", "MEDICO")
-                        .requestMatchers("/api/consultas/**").hasAnyRole("ADMIN", "MEDICO", "ENFERMEIRO")
-                        .requestMatchers("/api/exames/**").hasAnyRole("ADMIN", "MEDICO", "TECNICO")
-                        .requestMatchers("/api/leitos/**").hasAnyRole("ADMIN", "ENFERMEIRO")
-                        .requestMatchers("/api/relatorios/**").hasAnyRole("ADMIN", "MEDICO")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

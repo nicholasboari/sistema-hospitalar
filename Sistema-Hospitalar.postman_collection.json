@@ -1,0 +1,523 @@
+{
+	"info": {
+		"_postman_id": "sistema-hospitalar-api",
+		"name": "Sistema Hospitalar API",
+		"description": "API completa para sistema de gerenciamento hospitalar com autenticação JWT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Autenticação",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('jwt_token', response.token);",
+									"    pm.environment.set('user_id', response.id);",
+									"    pm.environment.set('user_name', response.nome);",
+									"    console.log('Token salvo:', response.token);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Registrar Usuário",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"novo_usuario\",\n  \"password\": \"senha123\",\n  \"nome\": \"Novo Usuário\",\n  \"email\": \"novo@hospital.com\",\n  \"role\": \"MEDICO\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "register"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👥 Pacientes",
+			"item": [
+				{
+					"name": "Listar Todos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/pacientes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes"]
+						}
+					}
+				},
+				{
+					"name": "Buscar por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/pacientes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Criar Paciente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"João Silva\",\n  \"cpf\": \"12345678901\",\n  \"dataNascimento\": \"1990-01-15\",\n  \"telefone\": \"(11) 99999-9999\",\n  \"email\": \"joao@email.com\",\n  \"endereco\": \"Rua das Flores, 123\",\n  \"cidade\": \"São Paulo\",\n  \"estado\": \"SP\",\n  \"cep\": \"01234-567\",\n  \"nomeResponsavel\": \"Maria Silva\",\n  \"telefoneResponsavel\": \"(11) 88888-8888\",\n  \"tipoSanguineo\": \"A+\",\n  \"alergias\": \"Penicilina\",\n  \"observacoes\": \"Paciente com histórico de alergias\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pacientes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes"]
+						}
+					}
+				},
+				{
+					"name": "Atualizar Paciente",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"João Silva Atualizado\",\n  \"telefone\": \"(11) 77777-7777\",\n  \"observacoes\": \"Observações atualizadas\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pacientes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Contar Pacientes Ativos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/pacientes/contar",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pacientes", "contar"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👨‍⚕️ Profissionais",
+			"item": [
+				{
+					"name": "Listar Todos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/profissionais",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profissionais"]
+						}
+					}
+				},
+				{
+					"name": "Criar Profissional",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Dr. Carlos Santos\",\n  \"cpf\": \"98765432100\",\n  \"dataNascimento\": \"1985-05-20\",\n  \"telefone\": \"(11) 55555-5555\",\n  \"email\": \"carlos@hospital.com\",\n  \"endereco\": \"Av. Paulista, 1000\",\n  \"cidade\": \"São Paulo\",\n  \"estado\": \"SP\",\n  \"cep\": \"01310-100\",\n  \"tipoProfissional\": \"MEDICO\",\n  \"especialidade\": \"Cardiologia\",\n  \"registroProfissional\": \"CRM12345\",\n  \"dataFormacao\": \"2010-12-15\",\n  \"instituicaoFormacao\": \"Universidade de São Paulo\",\n  \"observacoes\": \"Especialista em cardiologia intervencionista\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/profissionais",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profissionais"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🏥 Consultas",
+			"item": [
+				{
+					"name": "Listar Todas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/consultas",
+							"host": ["{{base_url}}"],
+							"path": ["api", "consultas"]
+						}
+					}
+				},
+				{
+					"name": "Criar Consulta",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paciente\": {\n    \"id\": 1\n  },\n  \"profissional\": {\n    \"id\": 1\n  },\n  \"dataHora\": \"2024-01-15T10:00:00\",\n  \"tipoConsulta\": \"CONSULTA_MEDICA\",\n  \"status\": \"AGENDADA\",\n  \"observacoes\": \"Consulta de rotina\",\n  \"duracao\": 30\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/consultas",
+							"host": ["{{base_url}}"],
+							"path": ["api", "consultas"]
+						}
+					}
+				},
+				{
+					"name": "Confirmar Consulta",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/consultas/1/confirmar",
+							"host": ["{{base_url}}"],
+							"path": ["api", "consultas", "1", "confirmar"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🛏️ Leitos",
+			"item": [
+				{
+					"name": "Listar Todos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/leitos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "leitos"]
+						}
+					}
+				},
+				{
+					"name": "Criar Leito",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numeroLeito\": \"101A\",\n  \"setor\": \"UTI\",\n  \"tipoLeito\": \"ENFERMARIA\",\n  \"status\": \"DISPONIVEL\",\n  \"observacoes\": \"Leito com equipamentos especiais\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/leitos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "leitos"]
+						}
+					}
+				},
+				{
+					"name": "Internar Paciente",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/leitos/1/internar/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "leitos", "1", "internar", "1"]
+						}
+					}
+				},
+				{
+					"name": "Dar Alta",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/leitos/1/alta",
+							"host": ["{{base_url}}"],
+							"path": ["api", "leitos", "1", "alta"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔬 Exames",
+			"item": [
+				{
+					"name": "Listar Todos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/exames",
+							"host": ["{{base_url}}"],
+							"path": ["api", "exames"]
+						}
+					}
+				},
+				{
+					"name": "Criar Exame",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paciente\": {\n    \"id\": 1\n  },\n  \"profissional\": {\n    \"id\": 1\n  },\n  \"tipoExame\": \"HEMOGRAMA\",\n  \"dataSolicitacao\": \"2024-01-15T08:00:00\",\n  \"dataRealizacao\": \"2024-01-15T09:00:00\",\n  \"status\": \"SOLICITADO\",\n  \"observacoes\": \"Exame de rotina\",\n  \"resultado\": null\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/exames",
+							"host": ["{{base_url}}"],
+							"path": ["api", "exames"]
+						}
+					}
+				},
+				{
+					"name": "Realizar Exame",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/exames/1/realizar",
+							"host": ["{{base_url}}"],
+							"path": ["api", "exames", "1", "realizar"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📊 Relatórios",
+			"item": [
+				{
+					"name": "Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/relatorios/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "relatorios", "dashboard"]
+						}
+					}
+				},
+				{
+					"name": "Estatísticas Pacientes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/relatorios/pacientes/estatisticas",
+							"host": ["{{base_url}}"],
+							"path": ["api", "relatorios", "pacientes", "estatisticas"]
+						}
+					}
+				},
+				{
+					"name": "Ocupação Leitos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/relatorios/ocupacao-leitos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "relatorios", "ocupacao-leitos"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+} 

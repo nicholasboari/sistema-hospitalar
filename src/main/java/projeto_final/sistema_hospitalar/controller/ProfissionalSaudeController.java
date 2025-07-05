@@ -1,5 +1,10 @@
 package projeto_final.sistema_hospitalar.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import projeto_final.sistema_hospitalar.model.ProfissionalSaude;
 import projeto_final.sistema_hospitalar.service.ProfissionalSaudeService;
+import projeto_final.sistema_hospitalar.dto.ProfissionalCreateDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,11 +77,34 @@ public class ProfissionalSaudeController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProfissionalSaude> criar(@RequestBody ProfissionalSaude profissional) {
+    @Operation(summary = "Criar novo profissional", description = "Cria um novo profissional de saúde no sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Profissional criado com sucesso", content = @Content(schema = @Schema(implementation = ProfissionalSaude.class))),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "409", description = "CPF ou registro já cadastrado")
+    })
+    public ResponseEntity<ProfissionalSaude> criar(@RequestBody ProfissionalCreateDTO profissionalDTO) {
         try {
+            // Validar dados obrigatórios
+            if (profissionalDTO.getNome() == null || profissionalDTO.getNome().trim().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            if (profissionalDTO.getCpf() == null || profissionalDTO.getCpf().trim().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            if (profissionalDTO.getTipoProfissional() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            if (profissionalDTO.getEspecialidade() == null || profissionalDTO.getEspecialidade().trim().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            ProfissionalSaude profissional = profissionalDTO.toEntity();
             ProfissionalSaude profissionalSalvo = profissionalService.salvar(profissional);
             return ResponseEntity.status(HttpStatus.CREATED).body(profissionalSalvo);
         } catch (Exception e) {
+            System.err.println("Erro ao criar profissional: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }

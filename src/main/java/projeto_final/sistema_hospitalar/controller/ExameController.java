@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import projeto_final.sistema_hospitalar.dto.ExameCreateDTO;
 import projeto_final.sistema_hospitalar.model.Exame;
 import projeto_final.sistema_hospitalar.service.ExameService;
 
@@ -87,9 +88,9 @@ public class ExameController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO')")
-    public ResponseEntity<Exame> criar(@RequestBody Exame exame) {
+    public ResponseEntity<Exame> criar(@RequestBody ExameCreateDTO dto) {
         try {
-            Exame exameSalvo = exameService.salvar(exame);
+            Exame exameSalvo = exameService.criarExame(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(exameSalvo);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
