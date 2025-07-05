@@ -39,7 +39,7 @@ Sistema completo de gerenciamento hospitalar desenvolvido em Spring Boot com fun
 1. **Clone o repositório**
 
 ```bash
-git clone <url-do-repositorio>
+git clone git@github.com:nicholasboari/sistema-hospitalar.git
 cd sistema-hospitalar
 ```
 
