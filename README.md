@@ -183,6 +183,8 @@ GET    /api/relatorios/ocupacao-leitos        - Ocupação de leitos
 - **exames**: Exames laboratoriais e de imagem
 - **leitos**: Controle de leitos hospitalares
 
+![](diagrama.png)
+
 ### Enums Utilizados
 
 - **TipoProfissional**: MEDICO, ENFERMEIRO, TECNICO, FISIOTERAPEUTA, PSICOLOGO, NUTRICIONISTA
