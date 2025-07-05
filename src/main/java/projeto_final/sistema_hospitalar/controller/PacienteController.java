@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import projeto_final.sistema_hospitalar.model.Paciente;
 import projeto_final.sistema_hospitalar.service.PacienteService;
@@ -28,6 +29,7 @@ public class PacienteController {
     private PacienteService pacienteService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO', 'ENFERMEIRO', 'RECEPCIONISTA')")
     @Operation(summary = "Listar todos os pacientes", description = "Retorna uma lista de todos os pacientes ativos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pacientes encontrados com sucesso", content = @Content(schema = @Schema(implementation = Paciente.class))),
@@ -39,6 +41,7 @@ public class PacienteController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO', 'ENFERMEIRO', 'RECEPCIONISTA')")
     @Operation(summary = "Buscar paciente por ID", description = "Retorna um paciente específico pelo seu ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Paciente encontrado com sucesso", content = @Content(schema = @Schema(implementation = Paciente.class))),
@@ -52,6 +55,7 @@ public class PacienteController {
     }
 
     @GetMapping("/cpf/{cpf}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO', 'ENFERMEIRO', 'RECEPCIONISTA')")
     public ResponseEntity<Paciente> buscarPorCpf(@PathVariable String cpf) {
         Optional<Paciente> paciente = pacienteService.buscarPorCpf(cpf);
         return paciente.map(ResponseEntity::ok)
@@ -59,12 +63,14 @@ public class PacienteController {
     }
 
     @GetMapping("/nome/{nome}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO', 'ENFERMEIRO', 'RECEPCIONISTA')")
     public ResponseEntity<List<Paciente>> buscarPorNome(@PathVariable String nome) {
         List<Paciente> pacientes = pacienteService.buscarPorNome(nome);
         return ResponseEntity.ok(pacientes);
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCIONISTA')")
     @Operation(summary = "Criar novo paciente", description = "Cria um novo paciente no sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Paciente criado com sucesso", content = @Content(schema = @Schema(implementation = Paciente.class))),
@@ -83,6 +89,7 @@ public class PacienteController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO', 'ENFERMEIRO')")
     public ResponseEntity<Paciente> atualizar(@PathVariable Long id, @RequestBody Paciente paciente) {
         try {
             Paciente pacienteAtualizado = pacienteService.atualizar(id, paciente);
@@ -95,6 +102,7 @@ public class PacienteController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         try {
             pacienteService.deletar(id);
@@ -105,12 +113,14 @@ public class PacienteController {
     }
 
     @GetMapping("/contar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO', 'ENFERMEIRO')")
     public ResponseEntity<Long> contarPacientesAtivos() {
         long quantidade = pacienteService.contarPacientesAtivos();
         return ResponseEntity.ok(quantidade);
     }
 
     @GetMapping("/existe-cpf/{cpf}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECEPCIONISTA')")
     public ResponseEntity<Boolean> existePorCpf(@PathVariable String cpf) {
         boolean existe = pacienteService.existePorCpf(cpf);
         return ResponseEntity.ok(existe);

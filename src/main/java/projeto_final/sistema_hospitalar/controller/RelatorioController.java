@@ -3,6 +3,7 @@ package projeto_final.sistema_hospitalar.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import projeto_final.sistema_hospitalar.model.ProfissionalSaude;
 import projeto_final.sistema_hospitalar.service.*;
@@ -26,6 +27,7 @@ public class RelatorioController {
     private LeitoService leitoService;
 
     @GetMapping("/dashboard")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO')")
     public ResponseEntity<Map<String, Object>> dashboard() {
         Map<String, Object> dashboard = new HashMap<>();
 
@@ -46,6 +48,7 @@ public class RelatorioController {
     }
 
     @GetMapping("/pacientes/estatisticas")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO')")
     public ResponseEntity<Map<String, Object>> estatisticasPacientes() {
         Map<String, Object> estatisticas = new HashMap<>();
         estatisticas.put("totalPacientes", pacienteService.contarPacientesAtivos());
@@ -53,6 +56,7 @@ public class RelatorioController {
     }
 
     @GetMapping("/profissionais/estatisticas")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO')")
     public ResponseEntity<Map<String, Object>> estatisticasProfissionais() {
         Map<String, Object> estatisticas = new HashMap<>();
         estatisticas.put("totalProfissionais", profissionalService.contarProfissionaisAtivos());
@@ -67,6 +71,7 @@ public class RelatorioController {
     }
 
     @GetMapping("/leitos/estatisticas")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO')")
     public ResponseEntity<Map<String, Object>> estatisticasLeitos() {
         Map<String, Object> estatisticas = new HashMap<>();
         estatisticas.put("leitosDisponiveis", leitoService.contarLeitosDisponiveis());
@@ -75,6 +80,7 @@ public class RelatorioController {
     }
 
     @GetMapping("/ocupacao-leitos")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO')")
     public ResponseEntity<Map<String, Object>> ocupacaoLeitos() {
         Map<String, Object> ocupacao = new HashMap<>();
         long disponiveis = leitoService.contarLeitosDisponiveis();

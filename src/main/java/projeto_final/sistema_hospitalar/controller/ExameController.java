@@ -1,16 +1,11 @@
 package projeto_final.sistema_hospitalar.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import projeto_final.sistema_hospitalar.model.Exame;
 import projeto_final.sistema_hospitalar.service.ExameService;
@@ -24,47 +19,48 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @Tag(name = "Exames", description = "API para gerenciamento de exames laboratoriais e de imagem")
 public class ExameController {
-    
+
     @Autowired
     private ExameService exameService;
-    
+
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO', 'TECNICO')")
     public ResponseEntity<List<Exame>> listarTodos() {
         List<Exame> exames = exameService.listarTodos();
         return ResponseEntity.ok(exames);
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<Exame> buscarPorId(@PathVariable Long id) {
         Optional<Exame> exame = exameService.buscarPorId(id);
         return exame.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    
+
     @GetMapping("/paciente/{pacienteId}")
     public ResponseEntity<List<Exame>> buscarPorPaciente(@PathVariable Long pacienteId) {
         List<Exame> exames = exameService.buscarPorPaciente(pacienteId);
         return ResponseEntity.ok(exames);
     }
-    
+
     @GetMapping("/profissional/{profissionalId}")
     public ResponseEntity<List<Exame>> buscarPorProfissional(@PathVariable Long profissionalId) {
         List<Exame> exames = exameService.buscarPorProfissional(profissionalId);
         return ResponseEntity.ok(exames);
     }
-    
+
     @GetMapping("/status/{status}")
     public ResponseEntity<List<Exame>> buscarPorStatus(@PathVariable Exame.StatusExame status) {
         List<Exame> exames = exameService.buscarPorStatus(status);
         return ResponseEntity.ok(exames);
     }
-    
+
     @GetMapping("/tipo/{tipoExame}")
     public ResponseEntity<List<Exame>> buscarPorTipo(@PathVariable String tipoExame) {
         List<Exame> exames = exameService.buscarPorTipo(tipoExame);
         return ResponseEntity.ok(exames);
     }
-    
+
     @GetMapping("/paciente/{pacienteId}/data")
     public ResponseEntity<List<Exame>> buscarPorPacienteEData(
             @PathVariable Long pacienteId,
@@ -72,7 +68,7 @@ public class ExameController {
         List<Exame> exames = exameService.buscarPorPacienteEData(pacienteId, dataInicio);
         return ResponseEntity.ok(exames);
     }
-    
+
     @GetMapping("/profissional/{profissionalId}/data")
     public ResponseEntity<List<Exame>> buscarPorProfissionalEData(
             @PathVariable Long profissionalId,
@@ -80,7 +76,7 @@ public class ExameController {
         List<Exame> exames = exameService.buscarPorProfissionalEData(profissionalId, dataInicio);
         return ResponseEntity.ok(exames);
     }
-    
+
     @GetMapping("/periodo")
     public ResponseEntity<List<Exame>> buscarPorPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataInicio,
@@ -88,8 +84,9 @@ public class ExameController {
         List<Exame> exames = exameService.buscarPorPeriodo(dataInicio, dataFim);
         return ResponseEntity.ok(exames);
     }
-    
+
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO')")
     public ResponseEntity<Exame> criar(@RequestBody Exame exame) {
         try {
             Exame exameSalvo = exameService.salvar(exame);
@@ -98,7 +95,7 @@ public class ExameController {
             return ResponseEntity.badRequest().build();
         }
     }
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<Exame> atualizar(@PathVariable Long id, @RequestBody Exame exame) {
         try {
@@ -110,7 +107,7 @@ public class ExameController {
             return ResponseEntity.badRequest().build();
         }
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         try {
@@ -120,8 +117,9 @@ public class ExameController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @PutMapping("/{id}/realizar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECNICO')")
     public ResponseEntity<Exame> realizarExame(@PathVariable Long id) {
         try {
             Exame exame = exameService.realizarExame(id);
@@ -130,8 +128,9 @@ public class ExameController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @PutMapping("/{id}/analisar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO', 'TECNICO')")
     public ResponseEntity<Exame> analisarExame(@PathVariable Long id) {
         try {
             Exame exame = exameService.analisarExame(id);
@@ -140,7 +139,7 @@ public class ExameController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @PutMapping("/{id}/concluir")
     public ResponseEntity<Exame> concluirExame(@PathVariable Long id) {
         try {
@@ -150,7 +149,7 @@ public class ExameController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<Exame> cancelarExame(@PathVariable Long id) {
         try {
@@ -160,4 +159,4 @@ public class ExameController {
             return ResponseEntity.notFound().build();
         }
     }
-} 
+}

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import projeto_final.sistema_hospitalar.model.ProfissionalSaude;
 import projeto_final.sistema_hospitalar.service.ProfissionalSaudeService;
@@ -21,12 +22,14 @@ public class ProfissionalSaudeController {
     private ProfissionalSaudeService profissionalService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO')")
     public ResponseEntity<List<ProfissionalSaude>> listarTodos() {
         List<ProfissionalSaude> profissionais = profissionalService.listarTodos();
         return ResponseEntity.ok(profissionais);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MEDICO')")
     public ResponseEntity<ProfissionalSaude> buscarPorId(@PathVariable Long id) {
         Optional<ProfissionalSaude> profissional = profissionalService.buscarPorId(id);
         return profissional.map(ResponseEntity::ok)
@@ -67,6 +70,7 @@ public class ProfissionalSaudeController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProfissionalSaude> criar(@RequestBody ProfissionalSaude profissional) {
         try {
             ProfissionalSaude profissionalSalvo = profissionalService.salvar(profissional);
@@ -77,6 +81,7 @@ public class ProfissionalSaudeController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProfissionalSaude> atualizar(@PathVariable Long id,
             @RequestBody ProfissionalSaude profissional) {
         try {
@@ -90,6 +95,7 @@ public class ProfissionalSaudeController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         try {
             profissionalService.deletar(id);
