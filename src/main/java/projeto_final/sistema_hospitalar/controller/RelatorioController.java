@@ -1,5 +1,11 @@
 package projeto_final.sistema_hospitalar.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/relatorios")
 @CrossOrigin(origins = "*")
+@Tag(name = "Relatórios", description = "API para relatórios e estatísticas do sistema")
 public class RelatorioController {
     
     @Autowired

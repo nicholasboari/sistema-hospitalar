@@ -1,5 +1,12 @@
 package projeto_final.sistema_hospitalar.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -15,6 +22,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/exames")
 @CrossOrigin(origins = "*")
+@Tag(name = "Exames", description = "API para gerenciamento de exames laboratoriais e de imagem")
 public class ExameController {
     
     @Autowired

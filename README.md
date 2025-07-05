@@ -52,12 +52,28 @@ cd sistema-hospitalar
 3. **Acesse a aplicação**
 
 - API REST: http://localhost:8080
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/api-docs
 - H2 Console: http://localhost:8080/h2-console
   - JDBC URL: `jdbc:h2:mem:testdb`
   - Username: `sa`
   - Password: `password`
 
-## 📚 Endpoints da API
+## 📚 Documentação da API
+
+### 🎯 **Swagger UI**
+
+Acesse a documentação interativa da API em: **http://localhost:8080/swagger-ui.html**
+
+A documentação inclui:
+
+- ✅ Todos os endpoints organizados por tags
+- ✅ Esquemas dos modelos de dados
+- ✅ Exemplos de requisições e respostas
+- ✅ Códigos de status HTTP
+- ✅ Teste direto dos endpoints
+
+### 📋 **Endpoints da API**
 
 ### Pacientes
 
@@ -239,6 +255,7 @@ curl -X POST http://localhost:8080/api/consultas \
 - **Spring Boot 3.5.3**: Framework principal
 - **Spring Data JPA**: Persistência de dados
 - **H2 Database**: Banco de dados em memória
+- **SpringDoc OpenAPI**: Documentação da API (Swagger)
 - **Lombok**: Redução de boilerplate
 - **Gradle**: Build tool
 - **Java 17**: Linguagem de programação
@@ -275,6 +292,8 @@ O sistema está configurado para usar:
 - **Banco**: H2 (memória)
 - **DDL**: create-drop (recria tabelas a cada execução)
 - **Logs**: SQL e requisições habilitados
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI**: http://localhost:8080/api-docs
 
 ## 📝 Licença
 

@@ -1,5 +1,12 @@
 package projeto_final.sistema_hospitalar.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,19 +20,33 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/pacientes")
 @CrossOrigin(origins = "*")
+@Tag(name = "Pacientes", description = "API para gerenciamento de pacientes")
 public class PacienteController {
     
     @Autowired
     private PacienteService pacienteService;
     
     @GetMapping
+    @Operation(summary = "Listar todos os pacientes", description = "Retorna uma lista de todos os pacientes ativos")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Pacientes encontrados com sucesso",
+                    content = @Content(schema = @Schema(implementation = Paciente.class))),
+        @ApiResponse(responseCode = "404", description = "Nenhum paciente encontrado")
+    })
     public ResponseEntity<List<Paciente>> listarTodos() {
         List<Paciente> pacientes = pacienteService.listarTodos();
         return ResponseEntity.ok(pacientes);
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Paciente> buscarPorId(@PathVariable Long id) {
+    @Operation(summary = "Buscar paciente por ID", description = "Retorna um paciente específico pelo seu ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Paciente encontrado com sucesso",
+                    content = @Content(schema = @Schema(implementation = Paciente.class))),
+        @ApiResponse(responseCode = "404", description = "Paciente não encontrado")
+    })
+    public ResponseEntity<Paciente> buscarPorId(
+            @Parameter(description = "ID do paciente") @PathVariable Long id) {
         Optional<Paciente> paciente = pacienteService.buscarPorId(id);
         return paciente.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -45,7 +66,14 @@ public class PacienteController {
     }
     
     @PostMapping
-    public ResponseEntity<Paciente> criar(@RequestBody Paciente paciente) {
+    @Operation(summary = "Criar novo paciente", description = "Cria um novo paciente no sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Paciente criado com sucesso",
+                    content = @Content(schema = @Schema(implementation = Paciente.class))),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos")
+    })
+    public ResponseEntity<Paciente> criar(
+            @Parameter(description = "Dados do paciente") @RequestBody Paciente paciente) {
         try {
             Paciente pacienteSalvo = pacienteService.salvar(paciente);
             return ResponseEntity.status(HttpStatus.CREATED).body(pacienteSalvo);
